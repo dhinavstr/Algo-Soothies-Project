@@ -6,7 +6,6 @@ public class CustomerFlow {
 
         Scanner in = new Scanner(System.in);
 
-        // ================== DATA MENU (PAKAI ARRAY) ==================
         String[] buahMenu = {"Mango", "Strawberry", "Banana", "Blueberry", "Watermelon"};
         int[] buahHarga = {15000, 17000, 12000, 18000, 10000};
 
