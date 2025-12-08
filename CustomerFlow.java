@@ -1,153 +1,336 @@
-import java.util.Scanner;
+package algosmoothie;
 
-public class CustomerFlow {
+import java.util.*;
 
-    public static void startCustomerFlow() {
+public class menuCust {
 
-        Scanner in = new Scanner(System.in);
+// --- GETTERS & SETTERS UNTUK ITEM YANG DIPILIH ---
+private static String orderedFruit = "", selectedSize = "", selectedSugar = "", selectedTopping = "", selectedBase = "", selectedIce = "";
 
-        String[] buahMenu = {"Mango", "Strawberry", "Banana", "Blueberry", "Watermelon"};
-        int[] buahHarga = {15000, 17000, 12000, 18000, 10000};
+public static String getOrderedFruit(){ return orderedFruit; }
+public static String getSelectedSize() { return selectedSize; }
+public static String getSelectedSugar() { return selectedSugar; }
+public static String getSelectedTopping() { return selectedTopping; }
+public static String getSelectedBase() { return selectedBase; }
+public static String getSelectedIce() { return selectedIce; }
 
-        String[] sizeMenu = {"Regular", "Large"};
-        int[] sizeHarga = {0, 5000};
-
-        String[] manisMenu = {"No Sugar", "Less Sugar", "Normal", "Extra Sugar"};
-        int[] manisHarga = {0, 1000, 2000, 3000};
-
-        String[] esMenu = {"No Ice", "Less Ice", "Normal", "Extra Ice"};
-        int[] esHarga = {0, 1000, 2000, 3000};
-
-        String[] milkMenu = {"Oat Milk", "Low Fat Milk", "Full Cream Milk", "Almond Milk", "Yogurt", "No Base Milk"};
-        int[] milkHarga = {5000, 4000, 3000, 6000, 7000, 0};
-
-        String[] toppingMenu = {"Chia Seed", "Whip Cream", "Jelly", "No Topping"};
-        int[] toppingHarga = {3000, 4000, 2000, 0};
+public static void setOrderedFruit(String fruit){ menuCust.orderedFruit = fruit; }
+public static void setSelectedSize(String size) { selectedSize = size; }
+public static void setSelectedSugar(String sugar) { selectedSugar = sugar; }
+public static void setSelectedTopping(String topping) { selectedTopping = topping; }
+public static void setSelectedBase(String base) { selectedBase = base; }
+public static void setSelectedIce(String ice) { selectedIce = ice; }
 
 
-        // ===================== PILIH BUAH ======================
-        System.out.println("\n=== PILIH BUAH ===");
-        for (int i = 0; i < buahMenu.length; i++) {
-            System.out.println((i+1) + ". " + buahMenu[i] + " (Rp " + buahHarga[i] + ")");
-        }
-        System.out.print("Masukkan pilihan: ");
-        int pilihBuah = in.nextInt() - 1;
+// --- KALKULASI HARGA ---
+private static int fruitPrice = 0, sizePrice = 0, toppingPrice = 0, 
+basePrice = 0;
 
-        if (pilihBuah < 0 || pilihBuah >= buahMenu.length) {
-            System.out.println("Pilihan buah tidak valid!");
-            return;
-        }
+// Variabel ini akan menyimpan total subtotal dari SEMUA ITEM di keranjang
+private static int totalGrandSubtotal = 0; 
 
-        String buah = buahMenu[pilihBuah];
-        int hargaBuah = buahHarga[pilihBuah];
-
-
-        // ===================== PILIH SIZE ======================
-        System.out.println("\n=== PILIH SIZE ===");
-        for (int i = 0; i < sizeMenu.length; i++) {
-            System.out.println((i+1) + ". " + sizeMenu[i] + " (Rp " + sizeHarga[i] + ")");
-        }
-        System.out.print("Masukkan pilihan: ");
-        int pilihSize = in.nextInt() - 1;
-
-        if (pilihSize < 0 || pilihSize >= sizeMenu.length) {
-            System.out.println("Pilihan size tidak valid!");
-            return;
-        }
-
-        String size = sizeMenu[pilihSize];
-        int hargaSize = sizeHarga[pilihSize];
+public static int getSubtotal() { 
+    return totalGrandSubtotal; 
+} 
+public static void setFruitPrice(int price) { 
+    fruitPrice = price; 
+}
+public static void setSizePrice(int price) {
+    sizePrice = price; 
+}
+public static void setToppingPrice(int price) {
+    toppingPrice = price; 
+}
+public static void setBasePrice(int price) {
+    basePrice = price; 
+}
 
 
-        // ===================== PILIH MANIS ======================
-        System.out.println("\n=== PILIH TINGKAT KEMANISAN ===");
-        for (int i = 0; i < manisMenu.length; i++) {
-            System.out.println((i+1) + ". " + manisMenu[i] + " (Rp " + manisHarga[i] + ")");
-        }
-        System.out.print("Masukkan pilihan: ");
-        int pilihManis = in.nextInt() - 1;
+// --- QUEUE & STACK & HISTORY ---
+public static ArrayList<String> orderQueue = new ArrayList<>();
+public static Stack<String> orderStack = new Stack<>();
+public static ArrayList<String> orderHistory = new ArrayList<>();
 
-        if (pilihManis < 0 || pilihManis >= manisMenu.length) {
-            System.out.println("Pilihan manis tidak valid!");
-            return;
-        }
-
-        String manis = manisMenu[pilihManis];
-        int hargaManis = manisHarga[pilihManis];
-
-
-        // ===================== PILIH ES ======================
-        System.out.println("\n=== PILIH JUMLAH ES ===");
-        for (int i = 0; i < esMenu.length; i++) {
-            System.out.println((i+1) + ". " + esMenu[i] + " (Rp " + esHarga[i] + ")");
-        }
-        System.out.print("Masukkan pilihan: ");
-        int pilihEs = in.nextInt() - 1;
-
-        if (pilihEs < 0 || pilihEs >= esMenu.length) {
-            System.out.println("Pilihan es tidak valid!");
-            return;
-        }
-
-        String es = esMenu[pilihEs];
-        int hargaEs = esHarga[pilihEs];
-
-
-        // ===================== PILIH MILK ======================
-        System.out.println("\n=== PILIH BASE MILK ===");
-        for (int i = 0; i < milkMenu.length; i++) {
-            System.out.println((i+1) + ". " + milkMenu[i] + " (Rp " + milkHarga[i] + ")");
-        }
-
-        System.out.print("Masukkan pilihan: ");
-        int pilihMilk = in.nextInt() - 1;
-
-        if (pilihMilk < 0 || pilihMilk >= milkMenu.length) {
-            System.out.println("Pilihan milk tidak valid!");
-            return;
-        }
-
-        String milk = milkMenu[pilihMilk];
-        int hargaMilk = milkHarga[pilihMilk];
-
-
-        // ===================== PILIH TOPPING ======================
-        System.out.println("\n=== PILIH TOPPING ===");
-        for (int i = 0; i < toppingMenu.length; i++) {
-            System.out.println((i+1) + ". " + toppingMenu[i] + " (Rp " + toppingHarga[i] + ")");
-        }
-
-        System.out.print("Masukkan pilihan: ");
-        int pilihTopping = in.nextInt() - 1;
-
-        if (pilihTopping < 0 || pilihTopping >= toppingMenu.length) {
-            System.out.println("Pilihan topping tidak valid!");
-            return;
-        }
-
-        String topping = toppingMenu[pilihTopping];
-        int hargaTopping = toppingHarga[pilihTopping];
-
-
-        // ===================== HITUNG TOTAL ======================
-        int subtotal = hargaBuah + hargaSize + hargaManis + hargaEs + hargaMilk + hargaTopping;
-        double ppn = subtotal * 0.11;
-        double total = subtotal + ppn;
-
-
-        // ===================== REVIEW PESANAN ======================
-        System.out.println("\n=== REVIEW PESANAN ===");
-        System.out.println("Buah      : " + buah);
-        System.out.println("Size      : " + size);
-        System.out.println("Manis     : " + manis);
-        System.out.println("Es        : " + es);
-        System.out.println("Base Milk : " + milk);
-        System.out.println("Topping   : " + topping);
-
-        System.out.println("\nSubtotal  : Rp " + subtotal);
-        System.out.println("PPN 11%   : Rp " + (int)ppn);
-        System.out.println("Total     : Rp " + (int)total);
-
-        System.out.println("\nTerima kasih sudah memesan!");
+// --- DATA & INVENTORY ---
+static class Fruit {
+    int id; String name; int price;
+    
+    Fruit(int id, String name, int price){
+        this.id = id; this.name = name; this.price = price;
     }
+}
+static Fruit[] fruits = {
+    new Fruit(1, "Mango", 10), new Fruit(2, "Strawberry", 10),
+    new Fruit(3, "Banana", 12), new Fruit(4, "Blueberry", 15),
+    new Fruit(5, "Watermelon", 15)
+    };
+public static class Inventory {
+    String name; int stock;
+    Inventory(String name, int stock) {
+        this.name = name; this.stock = stock;
+    }
+}
+public static Inventory[] inventory = {
+    new Inventory("Mango", 50), new Inventory("Strawberry", 30),
+    new Inventory("Banana", 40), new Inventory("Blueberry", 20),
+    new Inventory("Watermelon", 25)
+};
+
+static void updateStock(int fruitId) {
+    String fruitName = getFruitName(fruitId);
+    for (Inventory inv : inventory) {
+        if (fruitName.equals(inv.name)) {
+            inv.stock--;
+            if (inv.stock < 5) {
+                System.out.println("⚠️ Low stock: " + inv.name + " (" + inv.stock + ")");
+            }
+            break;
+        }
+    }
+}
+private static int currentFruitId = 0;
+public static int getCurrentFruitId() { return currentFruitId; }
+public static void setCurrentFruitId(int id) { currentFruitId = id; }
+
+// Metode untuk mereset pesanan (Dipanggil oleh Payment)
+public static void resetOrder() {
+    orderQueue.clear();
+    orderStack.clear();
+    totalGrandSubtotal = 0;
+}
+
+
+// ==========================================================
+// --- METODE PEMESANAN (Menerima Scanner sc) ---
+// ==========================================================
+
+public static void menufruit(Scanner sc) {
+    System.out.println("--------------- MENU -------------");
+    System.out.printf("%-10s %-15s %8s\n", "Code", "Fruit", "Price");
+
+    for(Fruit f : fruits){
+        System.out.printf("%-8d %-15s %6d$\n", f.id, f.name, f.price);
+    }
+    System.out.println("0. return to homepage");
+    System.out.println();
+    System.out.print("Choose 1 (by Code): ");
+    
+    if (!sc.hasNextInt()) {
+        System.out.println("Input tidak valid. Harap masukkan angka.");
+        sc.nextLine();
+        menufruit(sc);
+        return;
+    }
+    int choice = sc.nextInt();
+    sc.nextLine();
+    
+    if (choice == 0) {
+        Main.homepageCust(sc);
+        return;
+    }
+
+    System.out.println("You chose " + getFruitName(choice));
+    switch (choice) {
+        case 1: 
+            setOrderedFruit("MANGO"); setCurrentFruitId(1); setFruitPrice(10);  break;
+        case 2:
+            setOrderedFruit("STRAWBERRY"); setCurrentFruitId(2); setFruitPrice(10); break;
+        case 3:
+            setOrderedFruit("BANANA"); setCurrentFruitId(3); setFruitPrice(12); break;
+        case 4:
+            setOrderedFruit("BLUEBERRY"); setCurrentFruitId(4); setFruitPrice(15); break;
+        case 5:
+            setOrderedFruit("WATERMELON"); setCurrentFruitId(5); setFruitPrice(15); break;
+        
+        default:
+            System.out.println("❌ Pilihan tidak valid. Kembali ke menu buah.");
+            menufruit(sc);
+            return;
+    }        
+    chooseSize(sc);
+
+}
+
+static void chooseSize(Scanner sc) {
+    System.out.println("----- Drink Size -----");
+    System.out.printf("%-10s %10s\n", "1. Regular" , " + 0$");
+    System.out.printf("%-10s %10s\n", "2. Large" , " + 3$");
+    System.out.print("Choose drink size (by number): "); 
+    int drinkSize = sc.nextInt();
+    sc.nextLine();
+
+    System.out.println("You chose : " + getSize(drinkSize));
+    if(drinkSize == 1){
+        setSizePrice(0); 
+        setSelectedSize("Regular");
+    } else if (drinkSize == 2) {
+        setSizePrice(3);
+        setSelectedSize("Large");    
+    } else {
+        System.out.println("Pilihan tidak valid, default ke Regular.");
+        setSizePrice(0); 
+        setSelectedSize("Regular");
+    }
+    System.out.println();
+    chooseSugarlevel(sc);
+}
+
+static void chooseSugarlevel(Scanner sc){
+    System.out.println("=== Sugar Level ===");
+    System.out.println("1. No Sugar");
+    System.out.println("2. Less Sugar");
+    System.out.println("3. Normal");
+    System.out.println("4. Extra Sugar");
+    System.out.print("Choose sugar level (by number): ");
+    int sugar = sc.nextInt();
+    sc.nextLine();
+
+    System.out.println("You chose : " + getSugar(sugar));
+    setSelectedSugar(getSugar(sugar));
+    System.out.println();
+    chooseTopping(sc);
+}
+
+static void chooseTopping(Scanner sc){
+    System.out.println("===== Topping =====");
+    System.out.printf("%-10s %9s\n", "1. Chia Seed" , " + 2$");
+    System.out.printf("%-10s %8s\n", "2. Whip Cream" , " + 3$"); 
+    System.out.printf("%-10s %11s\n", "3. Jelly" , " + 4$");
+    System.out.printf("%-10s\n", "4. No Topping");
+    System.out.print("Choose topping (by number): ");
+    int topping = sc.nextInt();
+    sc.nextLine();
+
+    System.out.println("You chose : " + getTopping(topping));
+
+    switch (topping) {
+        case 1: setToppingPrice(2); setSelectedTopping("Chia Seed"); break;  
+        case 2: setToppingPrice(3); setSelectedTopping("Whip Cream"); break;  
+        case 3: setToppingPrice(4); setSelectedTopping("Jelly"); break;  
+        default: setToppingPrice(0); setSelectedTopping("No Topping"); break; 
+    }
+    System.out.println();
+    chooseBase(sc);
+}
+
+static void chooseBase(Scanner sc){
+    System.out.println("===== Base Milk =====");
+    System.out.println("1. Full Cream      $2");
+    System.out.println("2. Low Fat Milk    $3");
+    System.out.println("3. Oat Milk        $5");
+    System.out.println("4. Almond Milk     $5");
+    System.out.println("5. Yogurt          $5");
+    System.out.println("6. No Base Milk    $0");
+    System.out.print("Choose Base Milk (by number): ");
+    int baseMilk = sc.nextInt();
+    sc.nextLine();
+
+    System.out.println("You chose : " + getBase(baseMilk));
+    
+    switch (baseMilk) {
+        case 1: setBasePrice(2); setSelectedBase("Full Cream"); break;
+        case 2: setBasePrice(3); setSelectedBase("Low Fat Milk"); break;
+        case 6: setBasePrice(0); setSelectedBase("No Base Milk"); break;
+        default: setBasePrice(5); setSelectedBase(getBase(baseMilk)); break; 
+    }
+    System.out.println();
+
+    chooseIce(sc);
+
+    } 
+
+static void chooseIce(Scanner sc){
+    System.out.println("== ICE LEVEL ==");
+    System.out.println("1. No Ice\n2. Less Ice\n3. Normal Ice\n4. Extra Ice");
+    System.out.print("Choose ice level: ");
+    int iceLevel = sc.nextInt();
+    sc.nextLine();
+    System.out.println("You Chose : " + getIce(iceLevel));
+    setSelectedIce(getIce(iceLevel));
+    System.out.println();
+
+    hitung(sc);
+}
+
+static void hitung(Scanner sc){
+    // HITUNG SUBTOTAL ITEM SAAT INI
+    int currentItemSubtotal = fruitPrice + sizePrice + toppingPrice + basePrice;
+    
+    // AKUMULASI KE TOTAL GRAND SUBTOTAL
+    totalGrandSubtotal += currentItemSubtotal;
+    
+    // STRING ORDER SEDERHANA
+    String order = getOrderedFruit() + " Smoothie\n" +
+               "  Size: " + selectedSize + " | Topping: " + selectedTopping + "\n" +
+               "  Base: " + selectedBase + " | Sugar: " + selectedSugar + "\n" +
+               "  Ice: " + selectedIce + "\n" +
+               "  (Harga Item: $" + currentItemSubtotal + ")";
+               
+    
+    // ADD KE QUEUE & STACK
+    updateStock(getCurrentFruitId());
+    orderQueue.add(order);
+    orderHistory.add(order);
+    orderStack.push(order);
+
+    // ORDER SUMMARY
+    System.out.println("\n----- ORDER SUMMARY ----- "); 
+    System.out.println("Item Subtotal: $" + currentItemSubtotal);
+    System.out.println("Total Cart Subtotal: $" + totalGrandSubtotal);
+    System.out.println("Item added to cart! (" + orderQueue.size() + " items)");
+    System.out.println("-------------------------");
+    System.out.println("1. Order Again");
+    System.out.println("2. Payment");
+    System.out.print("Choose: ");
+    
+    int choice = sc.nextInt();
+    sc.nextLine();
+    
+    if(choice == 1) {
+        System.out.println("Cart updated! (" + orderQueue.size() + " items)\n");
+        menufruit(sc);
+    } else if (choice == 2) {
+        Payment.payment(sc);
+    } else {
+        System.out.println("Pilihan tidak valid. Kembali ke halaman customer.");
+        Main.homepageCust(sc);
+    }
+}
+    
+// --- UTILITY METHODS (GETTERS) ---
+ static String getFruitName(int num) {
+    switch(num) {
+        case 1: return "Mango"; case 2: return "Strawberry"; case 3: return "Banana";
+        case 4: return "Blueberry"; case 5: return "Watermelon"; default: return "Unknown Fruit";
+    }
+}
+static String getSize(int num) {
+    switch(num) {
+        case 1: return "Regular Size"; case 2: return "Large Size"; default: return "Regular Size (Default)";
+    }
+}
+static String getSugar(int num) {
+    switch(num) {
+        case 1: return "No Sugar"; case 2: return "Less Sugar"; case 3: return "Normal Sugar";
+        case 4: return "Extra Sugar"; default: return "Normal Sugar (Default)";
+    }
+}
+static String getTopping(int num) {
+    switch(num) {
+        case 1: return "Chia Seed"; case 2: return "Whip Cream"; case 3: return "Jelly";
+        default : return "No Topping";
+    }
+}
+static String getBase(int num) {
+    switch(num) {
+        case 1: return "Full Cream"; case 2: return "Low Fat Milk"; case 3: return "Oat Milk";
+        case 4: return "Almond Milk"; case 5: return "Yogurt"; default: return "No Base Milk";
+    }
+}
+static String getIce(int num) {
+    switch(num) {
+        case 1: return "No Ice"; case 2: return "Less Ice"; case 3: return "Normal Ice";
+        case 4: return "Extra Ice"; default: return "Normal Ice (Default)";
+    }
+}
 }
